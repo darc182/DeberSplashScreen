@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Archivo de Fotos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      @for (photo of photoService.photos; track photo.filepath) {
+        <ion-col size="6">
+          <ion-img [src]="photo.webviewPath"></ion-img>
+          <div class="file-name">{{photo.displayName || 'Sin nombre'}}</div>
+        </ion-col>
+      }
+    </ion-row>
+  </ion-grid>
+</ion-content>
