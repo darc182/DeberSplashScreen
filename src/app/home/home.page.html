@@ -1,26 +1,36 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Galería de Fotos
-    </ion-title>
+    <ion-title>Galería de Fotos</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  @if (!photoService.photosLoaded) {
+    <ion-button expand="block" (click)="loadPhotos()">
+      <ion-icon name="refresh" slot="start"></ion-icon>
+      Cargar Fotos
+    </ion-button>
+  }
+
+  @if (photoService.photosLoaded) {
+    <ion-grid>
+      <ion-row>
+        @for (photo of photoService.photos; track photo.filepath) {
+          <ion-col size="3">
+            <ion-img [src]="photo.webviewPath" [alt]="photo.filepath"></ion-img>
+            <div class="file-name">{{photo.filepath}}</div>
+            <ion-button expand="block" fill="clear" (click)="photoService.deletePhoto(photo, $index)">
+              <ion-icon name="trash" color="danger"></ion-icon>
+            </ion-button>
+          </ion-col>
+        }
+      </ion-row>
+    </ion-grid>
+  }
+
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-    <ion-fab-button (click)="addPhotoToGallery()">
+    <ion-fab-button (click)="photoService.addNewToGallery()">
       <ion-icon name="camera"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-
-  <ion-grid>
-    <ion-row>
-      <ion-col size="6" *ngFor="let photo of photoService.photos; index as position">
-        <ion-img [src]="photo.webviewPath"></ion-img>
-        <ion-button expand="block" fill="clear" (click)="deletePhoto(photo, position)">
-          <ion-icon name="trash" color="danger"></ion-icon>
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
 </ion-content>
