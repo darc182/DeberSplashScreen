@@ -8,23 +8,27 @@ import { Preferences } from '@capacitor/preferences';
 })
 export class PhotoService {
   public photos: UserPhoto[] = [];
+  public async addNewToGallery() {
+    await this.takePhoto(100);
+  }
+  // Nuevo método para 50% calidad
+  public async addLowQualityPhoto() {
+    await this.takePhoto(50);
+  }
 
   constructor() { }
 
-  public async addNewToGallery() {
-    // Tomar una foto
+  private async takePhoto(quality: number) {
     const capturedPhoto = await Camera.getPhoto({
       resultType: CameraResultType.Uri,
       source: CameraSource.Camera,
-      quality: 100
+      quality: quality
     });
-
-    // Guardar la foto y agregarla a la galería
-    const savedImageFile = await this.savePicture(capturedPhoto);
+  
+    const savedImageFile = await this.savePicture(capturedPhoto, quality);  // Pasamos quality aquí
     this.photos.unshift(savedImageFile);
-
-    // Guardar en preferencias
-    Preferences.set({
+  
+    await Preferences.set({
       key: 'photos',
       value: JSON.stringify(this.photos)
     });
@@ -50,23 +54,22 @@ export class PhotoService {
     });
   }
 
-  private async savePicture(photo: Photo) {
-  // Convertir foto a base64
-  const base64Data = await this.readAsBase64(photo);
-
-  // Escribir el archivo
-  const fileName = `${Date.now()}.jpeg`;
-  await Filesystem.writeFile({
-    path: fileName,
-    data: base64Data,
-    directory: Directory.Data
-  });
-
-  return {
-    filepath: fileName,
-    webviewPath: photo.webPath
-  };
-}
+  private async savePicture(photo: Photo, quality?: number) {  // Añadir parámetro quality
+    const base64Data = await this.readAsBase64(photo);
+    const fileName = `${Date.now()}.jpeg`;
+    
+    await Filesystem.writeFile({
+      path: fileName,
+      data: base64Data,
+      directory: Directory.Data
+    });
+  
+    return {
+      filepath: fileName,
+      webviewPath: photo.webPath,
+      quality: quality || 100  // Usamos el parámetro recibido
+    };
+  }
 
   private async readAsBase64(photo: Photo) {
   // Obtener la foto, leer como blob, luego convertir a base64
@@ -105,4 +108,5 @@ public async loadSaved() {
 export interface UserPhoto {
   filepath: string;
   webviewPath?: string;
+  quality?: number; // Nueva propiedad
 }

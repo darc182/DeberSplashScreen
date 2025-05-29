@@ -15,7 +15,7 @@ import {
   IonButton 
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { camera, trash } from 'ionicons/icons';
+import { camera, trash, cameraOutline } from 'ionicons/icons';
 import { NgFor } from '@angular/common'; // Importa NgFor
 
 @Component({
@@ -41,7 +41,7 @@ import { NgFor } from '@angular/common'; // Importa NgFor
 })
 export class HomePage {
   constructor(public photoService: PhotoService) {
-    addIcons({ camera, trash });
+    addIcons({camera,cameraOutline,trash});
   }
 
   async ngOnInit() {

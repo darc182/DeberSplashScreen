@@ -1,23 +1,22 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Galería de Fotos
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
+  <!-- Botones FAB para tomar fotos -->
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-    <ion-fab-button (click)="addPhotoToGallery()">
-      <ion-icon name="camera"></ion-icon>
+    <ion-fab-button (click)="photoService.addNewToGallery()">
+      <ion-icon name="camera"></ion-icon> 100%
+    </ion-fab-button>
+    <ion-fab-button (click)="photoService.addLowQualityPhoto()" class="low-quality-btn">
+      <ion-icon name="camera-outline"> </ion-icon> 50%
     </ion-fab-button>
   </ion-fab>
 
   <ion-grid>
     <ion-row>
-      <ion-col size="6" *ngFor="let photo of photoService.photos; index as position">
+      <ion-col size="3" *ngFor="let photo of photoService.photos; index as position">
         <ion-img [src]="photo.webviewPath"></ion-img>
-        <ion-button expand="block" fill="clear" (click)="deletePhoto(photo, position)">
+        <div class="photo-info">
+          <span>Calidad: {{photo.quality || 100}}%</span>
+        </div>
+        <ion-button expand="block" fill="clear" (click)="photoService.deletePhoto(photo, position)">
           <ion-icon name="trash" color="danger"></ion-icon>
         </ion-button>
       </ion-col>
