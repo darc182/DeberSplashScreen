@@ -51,25 +51,23 @@ export class PhotoService {
   }
 
   private async savePicture(photo: Photo) {
-  // Convertir foto a base64
-  const base64Data = await this.readAsBase64(photo);
+    const base64Data = await this.readAsBase64(photo);
+    const fileName = `${Date.now()}.jpeg`;
+    
+    await Filesystem.writeFile({
+      path: fileName,
+      data: base64Data,
+      directory: Directory.Data
+    });
+  
+    return {
+      filepath: fileName,
+      webviewPath: photo.webPath,
+      displayName: `Foto ${new Date().toLocaleString()}` // Añade displayName
+    };
+  }
 
-  // Escribir el archivo
-  const fileName = `${Date.now()}.jpeg`;
-  await Filesystem.writeFile({
-    path: fileName,
-    data: base64Data,
-    directory: Directory.Data
-  });
-
-  return {
-    filepath: fileName,
-    webviewPath: photo.webPath
-  };
-}
-
-  private async readAsBase64(photo: Photo) {
-  // Obtener la foto, leer como blob, luego convertir a base64
+private async readAsBase64(photo: any) {
   const response = await fetch(photo.webPath!);
   const blob = await response.blob();
   return await this.convertBlobToBase64(blob) as string;
@@ -105,4 +103,5 @@ public async loadSaved() {
 export interface UserPhoto {
   filepath: string;
   webviewPath?: string;
+  displayName?: string; // Añade esta propiedad
 }
