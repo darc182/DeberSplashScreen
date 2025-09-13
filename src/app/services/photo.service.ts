@@ -8,7 +8,7 @@ import { Preferences } from '@capacitor/preferences';
 })
 export class PhotoService {
   public photos: UserPhoto[] = [];
-
+  public photosLoaded = false;
   constructor() { }
 
   public async addNewToGallery() {
@@ -85,6 +85,8 @@ private convertBlobToBase64 = (blob: Blob) => new Promise((resolve, reject) => {
 });
 
 public async loadSaved() {
+  if (this.photosLoaded) return; // No cargar si ya están cargadas
+  
   // Cargar fotos guardadas
   const { value } = await Preferences.get({ key: 'photos' });
   this.photos = (value ? JSON.parse(value) : []) as UserPhoto[];
@@ -96,10 +98,18 @@ public async loadSaved() {
       directory: Directory.Data
     });
     
-    // Convertir a formato web
     photo.webviewPath = `data:image/jpeg;base64,${readFile.data}`;
   }
+  
+  this.photosLoaded = true; // Marcar como cargadas
 }
+
+// Método para forzar recarga
+public async reloadPhotos() {
+  this.photosLoaded = false;
+  await this.loadSaved();
+}
+
 }
 
 export interface UserPhoto {

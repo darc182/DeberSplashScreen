@@ -5,54 +5,42 @@ import {
   IonToolbar, 
   IonTitle, 
   IonContent, 
-  IonFab, 
-  IonFabButton, 
-  IonIcon, 
   IonGrid, 
   IonRow, 
   IonCol, 
   IonImg, 
-  IonButton 
+  IonButton, 
+  IonIcon, 
+  IonFab, 
+  IonFabButton 
 } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { camera, trash } from 'ionicons/icons';
-import { NgFor } from '@angular/common'; // Importa NgFor
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
   standalone: true,
   imports: [
-    IonHeader, 
-    IonToolbar, 
-    IonTitle, 
-    IonContent, 
-    IonFab, 
-    IonFabButton, 
-    IonIcon, 
-    IonGrid, 
-    IonRow, 
-    IonCol, 
-    IonImg, 
+    CommonModule,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonImg,
     IonButton,
-    NgFor // Añade NgFor a los imports
+    IonIcon,
+    IonFab,
+    IonFabButton
   ]
 })
 export class HomePage {
-  constructor(public photoService: PhotoService) {
-    addIcons({ camera, trash });
-  }
+  constructor(public photoService: PhotoService) {}
 
-  async ngOnInit() {
-  await this.photoService.loadSaved();
-}
-
-  addPhotoToGallery() {
-    this.photoService.addNewToGallery();
-  }
-
-  deletePhoto(photo: any, position: number) {
-    this.photoService.deletePhoto(photo, position);
+  async loadPhotos() {
+    await this.photoService.loadSaved();
   }
 }
