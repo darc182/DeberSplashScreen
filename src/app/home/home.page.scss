@@ -25,3 +25,10 @@
 #container a {
   text-decoration: none;
 }
+.file-name {
+  font-size: 12px;
+  text-align: center;
+  word-break: break-all;
+  padding: 5px;
+  color: var(--ion-color-medium);
+}
